@@ -2,6 +2,7 @@ import re
 import networkx as nx
 import graphviz as gv
 from crossref_commons.retrieval import get_publication_as_json as cr_get_pub
+from crossref_commons.sampling import get_sample as cr_sample
 from app.models import Document
 from app import db
 
@@ -86,3 +87,17 @@ def graph_svg(graph):
     for f, t in graph.edges:
         viz.edge(str(f), str(t))
     return viz.pipe().decode('utf-8')
+
+ 
+def scrape():
+    while True:
+        sample = cr_sample(size=50, filter={'type': 'journal-article'})
+        for s in sample:
+            try:
+                doc = Document(doi=s['DOI'], meta=s)
+                build_graph(doc)
+                db.session.add(doc)
+            except (KeyError, ValueError):
+                continue
+        db.session.commit()
+        sleep(30)
