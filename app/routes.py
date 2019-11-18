@@ -1,3 +1,4 @@
+import os
 import flask
 from urllib.parse import quote, unquote
 from app.models import Document
@@ -19,3 +20,7 @@ def results(doi):
     s = graph_svg(g)
     return s
     return flask.render_template('results.html', graphsvg=s)
+
+@app.route('/cy', methods=['GET'])
+def cy():
+    return flask.render_template('cy.html')
