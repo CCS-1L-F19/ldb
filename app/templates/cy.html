@@ -4,7 +4,7 @@
 
 	<head>
 
-    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.9.4/cytoscape.min.js"></script>
 
     <!-- for testing with local version of cytoscape.js -->
@@ -13,17 +13,14 @@
     <script src="https://unpkg.com/dagre@0.7.4/dist/dagre.js"></script>
     <script src="https://cytoscape.org/cytoscape.js-dagre/cytoscape-dagre.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='cy.css') }}">
 
     <script type="text/javascript" src="{{ url_for('static', filename='cy.js') }}"></script>
 	</head>
 
     <title>cytoscape-dagre demo</title>
 
-<body>
-    <h1>cytoscape-dagre demo</h1>
+    <h1 id="demo">cytoscape-dagre demo</h1>
 	<div id="cy"></div>
-</body>
 
 
 {% endblock %}

@@ -1,5 +1,5 @@
 
-window.addEventListener('DOMContentLoaded', function(){
+$(function(){
 
 var cy = window.cy = cytoscape({
   container: document.getElementById('cy'),
@@ -15,7 +15,7 @@ var cy = window.cy = cytoscape({
 	{
 	  selector: 'node',
 	  style: {
-		'background-color': '#11479e'
+		'background-color': '#11479e' // node color
 	  }
 	},
 
@@ -25,7 +25,7 @@ var cy = window.cy = cytoscape({
 		'width': 4,
 		'target-arrow-shape': 'triangle',
 		'line-color': '#9dbaea',
-		'target-arrow-color': '#9dbaea',
+		'target-arrow-color': '#9dbaea', // arrow color
 		'curve-style': 'bezier'
 	  }
 	}

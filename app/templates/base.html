@@ -1,13 +1,16 @@
 <html>
 	<head>
 		<title> LDB </title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='cy.css') }}">
 	</head>
 	<body>
-		<div>
+		<div id="navbar">
 			LDB:
 			<a href="{{ url_for('index') }}">Home</a>
+			<hr>
 		</div>
-		<hr>
-		{% block content %} {% endblock %}
+		<div id="content">
+			{% block content %} {% endblock %}
+		</div>
 	</body>
 </html>
