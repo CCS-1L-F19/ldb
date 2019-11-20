@@ -14,7 +14,50 @@
     <script src="https://cytoscape.org/cytoscape.js-dagre/cytoscape-dagre.js"></script>
 
 
-    <script type="text/javascript" src="{{ url_for('static', filename='cy.js') }}"></script>
+    <script>
+		$(function(){
+			var cy = window.cy = cytoscape({
+				container: document.getElementById('cy'),
+				boxSelectionEnabled: false,
+				autounselectify: true,
+				layout: {
+					name: 'dagre'
+				},
+				elements: {
+					nodes: [
+						{% for node in graph.nodes %}
+						{ data: { id: "{{ node.__repr__() }}" , name: "{{ node.__str__() }}" } },
+						{% endfor %}
+					],
+					edges: [
+						{% for edge in graph.edges %}
+						{ data: { source: "{{ edge[0].__repr__() }}" , target: "{{ edge[1].__repr__() }}" } },
+						{% endfor %}
+					]
+				},
+				style: [
+					{
+						selector: 'node',
+						style: {
+							'background-color': '#11479e',
+							'label': 'data(name)',
+						}
+					},
+					{
+					   selector: 'edge',
+					   style: {
+						 'width': 4,
+						 'target-arrow-shape': 'triangle',
+						 'line-color': '#9dbaea',
+						 'target-arrow-color': '#9dbaea', // arrow color
+						 'curve-style': 'bezier',
+						 'label': 'data(name)'
+					   }
+					}
+			]
+	});
+	});
+	</script>
 	</head>
 
     <title>cytoscape-dagre demo</title>

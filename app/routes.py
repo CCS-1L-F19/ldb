@@ -19,8 +19,8 @@ def results(doi):
     g = build_graph(unquote(doi))
     s = graph_svg(g)
     return s
-    return flask.render_template('results.html', graphsvg=s)
 
-@app.route('/cy', methods=['GET'])
-def cy():
-    return flask.render_template('cy.html')
+@app.route('/cy/<doi>', methods=['GET'])
+def cy(doi):
+    g = build_graph(unquote(doi))
+    return flask.render_template('cy.html', graph=g)
