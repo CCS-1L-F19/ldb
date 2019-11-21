@@ -1,3 +1,4 @@
+import re
 from app import db, login
 from sqlalchemy import JSON
 from flask_login import UserMixin
@@ -7,8 +8,20 @@ reference = db.Table('reference',
     db.Column('document', db.Integer, db.ForeignKey('document.id'), primary_key=True),
     db.Column('reference', db.Integer, db.ForeignKey('document.id'), primary_key=True)
 )
- 
- 
+
+
+def _trykeys(dict_, keys):
+    """
+    Tries a list of keys in the given order
+    """
+    for k in keys:
+        try:
+            return dict_[k]
+        except KeyError:
+            pass
+    return None
+
+
 class Document(db.Model):
     __tablename__ = 'document'
 
@@ -31,20 +44,32 @@ class Document(db.Model):
 
     def __str__(self):
         try:
+            author = self['author'][0]['family']
+            if len(self['author']) > 2:
+                author += ' et. al'
+            elif len(self['author']) == 2:
+                author += ' & {}'.format(self['author'][1]['family'])
+            year = _trykeys(self.meta, ['published-print', 'issued', 'created'])
+            if year is None or author == '':
+                raise KeyError # FIXME make this a diff error
+            year = year['date-parts'][0][0]
+            return '{} ({})'.format(author, year)
+        except (KeyError, IndexError):
+            pass
+        try:
+            citation = self['unstructured']
+            author = citation[:re.search('\w{3,}\.\s', citation).end() - 1]
+            year = re.findall(r'\b(?:20|19)\d\d\b', citation)[0]
+            return '{} ({})'.format(author, year)
+        except(KeyError, IndexError, AttributeError):
+            pass
+        try:
             if isinstance(self['title'], list):
                 return self['title'][0]
             else:
                 return self['title']
         except (KeyError, IndexError):
-            pass
-        try:
-            if isinstance(self['DOI'], list):
-                return self['DOI'][0]
-            else:
-                return self['DOI']
-        except (KeyError, IndexError):
-            pass
-        return '<Document {}>'.format(self.id)
+            return self.__repr__()
 
     def __repr__(self):
         try:
@@ -55,3 +80,9 @@ class Document(db.Model):
         except (KeyError, IndexError):
             pass
         return '<Document {}>'.format(self.id)
+
+    def short(self):
+        try:
+            return self['short-title']
+        except KeyError:
+            return self.__str__()
