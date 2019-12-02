@@ -2,6 +2,7 @@ from app import db, login
 from sqlalchemy import JSON
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from crossref_commons.retrieval import get_publication_as_refstring as cr_getref
 
 reference = db.Table('reference',
     db.Column('document', db.Integer, db.ForeignKey('document.id'), primary_key=True),
@@ -55,3 +56,25 @@ class Document(db.Model):
         except (KeyError, IndexError):
             pass
         return '<Document {}>'.format(self.id)
+
+    def refstring(self, format_='apa'):
+        key = 'cr_getref_{}'.format(format_)
+        try:
+            return self[key]
+        except KeyError:
+            pass
+        c = str(self.meta)
+        try:
+            c = self['unstructured']
+        except KeyError:
+            pass
+        try:
+            c = cr_getref(self['doi'], format_)
+        except KeyError:
+            try:
+                c = cr_getref(self['DOI'], format_)
+            except KeyError:
+                pass
+        # TODO for this to actually save time we need to make the JSON object mutable
+        self.meta[key] = c
+        return c
