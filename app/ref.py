@@ -75,6 +75,11 @@ def build_graph(doi, depth=2):
     doc.queried = True
     db.session.commit()
     return graph
+
+
+def sort_graph(g):
+    p = nx.pagerank(g)
+    return sorted(p.keys(), key=lambda x: p[x])[::-1]
  
  
 def graph_svg(graph):
