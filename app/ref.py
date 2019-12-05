@@ -35,6 +35,9 @@ def build_graph(doi, depth=2):
     """
     graph = nx.DiGraph()
     doc = doi
+    if isinstance(doc, list):
+        return nx.compose_all([build_graph(d) for d in doc])
+
     if isinstance(doc, str):
         # this is an initial call, get the publication
         doc = get_doc(doi)
@@ -72,6 +75,11 @@ def build_graph(doi, depth=2):
     doc.queried = True
     db.session.commit()
     return graph
+
+
+def sort_graph(g):
+    p = nx.pagerank(g)
+    return sorted(p.keys(), key=lambda x: p[x])[::-1]
  
  
 def graph_svg(graph):

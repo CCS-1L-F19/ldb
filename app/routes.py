@@ -2,7 +2,7 @@ import os
 import flask
 from urllib.parse import quote, unquote
 from app.models import Document
-from app.ref import build_graph, graph_svg
+from app.ref import build_graph, graph_svg, sort_graph
 from app import app, db
 from app.forms import GraphForm
 
@@ -24,3 +24,18 @@ def results(doi):
 def cy(doi):
     g = build_graph(unquote(doi))
     return flask.render_template('cy.html', graph=g)
+     
+ 
+@app.route('/txt/<doi>', methods=['GET'])
+def txt(doi):
+    g = build_graph(unquote(doi))
+    s = sort_graph(g)
+    ref = [a.refstring() for a in s]
+    cb = []
+    for a in s:
+        try:
+            cb.append(a['is-referenced-by-count'])
+        except KeyError:
+            cb.append('?')
+    lines = ['{}\t{}'.format(r, c) for r, c in zip(ref, cb)]
+    return '\n'.join(lines)
