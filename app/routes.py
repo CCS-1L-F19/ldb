@@ -11,7 +11,7 @@ from app.forms import GraphForm
 def index():
     form = GraphForm()
     if form.validate_on_submit():
-        return flask.redirect(flask.url_for('results', doi=quote(form.doi.data, safe='')))
+        return flask.redirect(flask.url_for('cy', doi=quote(form.doi.data, safe='')))
     return flask.render_template('index.html', form=form)
 
 @app.route('/results/<doi>', methods=['GET'])
