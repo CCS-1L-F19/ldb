@@ -38,4 +38,6 @@ def txt(doi):
         except KeyError:
             cb.append('?')
     lines = ['{}\t{}'.format(r, c) for r, c in zip(ref, cb)]
-    return '\n'.join(lines)
+    response = flask.make_response('\n'.join(lines))
+    response.headers["Content-Disposition"] = "attachment; filename=citegraph.txt"
+    return response
