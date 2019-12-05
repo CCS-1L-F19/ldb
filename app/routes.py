@@ -23,7 +23,7 @@ def results(doi):
 @app.route('/cy/<doi>', methods=['GET'])
 def cy(doi):
     g = build_graph(unquote(doi))
-    return flask.render_template('cy.html', graph=g)
+    return flask.render_template('cy.html', graph=g, doi=doi)
      
  
 @app.route('/txt/<doi>', methods=['GET'])
