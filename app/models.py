@@ -45,7 +45,9 @@ class Document(db.Model):
 
     def __str__(self):
         try:
-            author = self['author'][0]['family']
+            author = self['author'][0]
+            if isinstance(author, dict):
+                author = author['family']
             if len(self['author']) > 2:
                 author += ' et. al'
             elif len(self['author']) == 2:
